@@ -1,0 +1,810 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiên Thảo Cộng Hiệu</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f2f2f2;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .page {
+      padding: 10px;
+    }
+
+    .card {
+      background: white;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+
+    .row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .btnStart {
+      background: #418043;
+      color: white;
+    }
+
+    .btnLoading {
+      background: #d67e86;
+      color: white;
+    }
+
+    .btnBack {
+      background: #888;
+      color: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td,
+    th {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .selectWrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .selNo {
+      min-width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .selectWrap select {
+      width: 100%;
+    }
+
+    .inputWrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .inlineField {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .inlineField label {
+      min-width: 36px;
+      font-size: 13px;
+      color: #0c0a0a;
+    }
+
+    .inlineField input {
+      flex: 1;
+    }
+
+    .hint {
+      color: #888;
+      font-size: 12px;
+    }
+
+    .sectionTitle {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .rowLack {
+      background: #ffe9e9;
+    }
+
+    .rowLack td {
+      color: #b00020;
+      font-weight: 600;
+    }
+
+    .row_sup {
+      background: #e8f7ec;
+    }
+
+    .row_ctl {
+      background: #eaf4ff;
+    }
+
+    .row_agi {
+      background: #f3eaff;
+    }
+
+    .row_str {
+      background: #fff2e6;
+    }
+
+    @media (max-width: 600px) {
+
+      body {
+        font-size: 16px;
+      }
+
+      input,
+      select {
+        font-size: 16px;
+        padding: 10px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 12px;
+      }
+
+      .card {
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+    }
+
+    .layout {
+      display: block;
+    }
+
+    @media (min-width: 1024px) {
+      .layout {
+        display: grid;
+        grid-template-columns: 520px 1fr;
+        gap: 12px;
+        padding: 10px;
+      }
+
+      #pageInput {
+        padding: 0;
+      }
+
+      #pageResult {
+        padding: 0;
+      }
+
+      .resultPane {
+        position: sticky;
+        top: 10px;
+        height: calc(100vh - 20px);
+        overflow: auto;
+      }
+
+      #pageResult.hidden {
+        display: block !important;
+      }
+
+      #pageResult .btnBack {
+        display: none !important;
+      }
+
+      #pageInput.hidden {
+        display: block;
+      }
+
+      #pageResult.hidden {
+        display: block;
+      }
+
+      .btnBack {
+        display: none;
+      }
+
+    }
+
+    .btnSaveImage {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #c44056;
+      color: #fff;
+      margin-top: 10px;
+    }
+
+    .btnTutorial {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #446ba7;
+      color: #fff;
+      margin-top: 10px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+    }
+
+    .modalBackdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+    }
+
+    .modalCard {
+      position: relative;
+      width: min(720px, calc(100vw - 24px));
+      max-height: calc(100vh - 24px);
+      margin: 12px auto;
+      background: #fff;
+      border-radius: 12px;
+      overflow: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    }
+
+    .modalHeader {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modalTitle {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modalClose {
+      border: none;
+      background: #eee;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .modalBody {
+      padding: 12px;
+    }
+
+    .tutorialItem {
+      margin-bottom: 14px;
+    }
+
+    .tutorialText {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .tutorialImg {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #eee;
+    }
+
+    .cCostOutput {
+      flex: 1;
+      min-width: 220px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+      font-weight: 700;
+    }
+
+    @media (min-width: 768px) {
+      .cCostOutput {
+        min-width: 280px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .cCostOutput {
+        min-width: 320px;
+      }
+    }
+
+    .hiddenCol {
+      display: none;
+    }
+
+    .miniLabel {
+      font-size: 12px;
+      color: #888;
+      white-space: nowrap;
+    }
+
+    .stageDistOnly {
+      display: none;
+    }
+
+    .hint {
+      color: #666;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .countStageRow {
+      display: grid;
+      grid-template-columns:
+        40px minmax(60px, 1fr) 40px minmax(80px, 1fr) 50px minmax(80px, 1fr);
+
+      gap: 8px;
+      align-items: center;
+    }
+
+    .countStageRow label {
+      font-weight: 600;
+    }
+
+    .countStageRow span {
+      font-size: 12px;
+      color: #888;
+      white-space: nowrap;
+    }
+
+    .countStageRow input,
+    .countStageRow select {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+      .countStageRow {
+        grid-template-columns: 52px 1fr;
+        gap: 8px 10px;
+        margin-bottom: 14px;
+      }
+
+      .countStageRow label {
+        grid-column: 1;
+        grid-row: 1;
+        font-size: 16px;
+      }
+
+      .countStageRow input {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .countStageRow span:nth-of-type(1) {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .countStageRow select:nth-of-type(1) {
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      .countStageRow span:nth-of-type(2) {
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      .countStageRow select:nth-of-type(2) {
+        grid-column: 2;
+        grid-row: 3;
+      }
+
+      .countStageRow span {
+        font-size: 14px;
+      }
+    }
+  
+    .credit {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      padding: 10px;
+    }
+    .credit a {
+      color: #5865F2;
+      text-decoration: none;
+    }
+  </style>
+  <script type="module" crossorigin src="assets/index-C7-UIsro.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="pageInput" class="page">
+
+      <h3><i class="fa-solid fa-leaf fa-lg" style="color: rgb(66, 123, 86);"></i> Tiên Thảo Cộng Hiệu</h3>
+
+      <div class="card">
+        <div class="sectionTitle">Giai đoạn</div>
+        <select id="stage">
+          <option value="1">4 Bậc</option>
+          <option value="2">6 Bậc</option>
+          <option value="3">8 Bậc</option>
+          <!-- <option value="5">9階</option> -->
+          <option value="4">10 Bậc (Chỉ thuật toán trang 1)</option>
+          <option value="6">10 Bậc (Bao gồm trang 2)</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <div class="sectionTitle" id="commonTitle">
+          Phổ thông (Tương Tư / U Hương)
+        </div>
+
+        <div class="row">
+          <input id="ownX" placeholder="Tương Tư">
+          <input id="ownY" placeholder="U Hương">
+          <input id="ownW" class="hidden" placeholder="Vọng Xuyên" inputmode="numeric">
+        </div>
+      </div>
+
+
+      <div id="grassNormalCard" class="card">
+        <div class="sectionTitle">Công (Thảo Lớn / Thảo Nhỏ)</div>
+        <div class="row">
+          <input id="ownC_str_compact" placeholder="Thảo Lớn" inputmode="numeric">
+          <input id="ownD_str_compact" placeholder="Thảo Nhỏ" inputmode="numeric">
+        </div>
+
+        <div class="sectionTitle">Tốc (Thảo Lớn / Thảo Nhỏ)</div>
+        <div class="row">
+          <input id="ownC_agi_compact" placeholder="Thảo Lớn" inputmode="numeric">
+          <input id="ownD_agi_compact" placeholder="Thảo Nhỏ" inputmode="numeric">
+        </div>
+
+        <div class="sectionTitle">Điều khiển (Thảo Lớn / Thảo Nhỏ)</div>
+        <div class="row">
+          <input id="ownC_ctl_compact" placeholder="Thảo Lớn" inputmode="numeric">
+          <input id="ownD_ctl_compact" placeholder="Thảo Nhỏ" inputmode="numeric">
+        </div>
+
+
+        <div class="sectionTitle">Hỗ trợ (Thảo Lớn / Thảo Nhỏ)</div>
+        <div class="row">
+          <input id="ownC_sup_compact" placeholder="Thảo Lớn" inputmode="numeric">
+          <input id="ownD_sup_compact" placeholder="Thảo Nhỏ" inputmode="numeric">
+        </div>
+      </div>
+
+
+
+      <div id="grassCompactCard" class="card">
+        <div class="sectionTitle">Số Thảo Lớn / Thảo Nhỏ mỗi loại</div>
+
+        <div class="row">
+          <div class="inlineField">
+            <label>Công</label>
+            <input id="ownC_str" placeholder="Thảo Lớn" inputmode="numeric">
+            <input id="ownD_str" placeholder="Thảo Nhỏ" inputmode="numeric">
+          </div>
+
+          <div class="inlineField">
+            <label>Tốc</label>
+            <input id="ownC_agi" placeholder="Thảo Lớn" inputmode="numeric">
+            <input id="ownD_agi" placeholder="Thảo Nhỏ" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="inlineField">
+            <label>Điều khiển</label>
+            <input id="ownC_ctl" placeholder="Thảo Lớn" inputmode="numeric">
+            <input id="ownD_ctl" placeholder="Thảo Nhỏ" inputmode="numeric">
+          </div>
+
+          <div class="inlineField">
+            <label>Hỗ trợ</label>
+            <input id="ownC_sup" placeholder="Thảo Lớn" inputmode="numeric">
+            <input id="ownD_sup" placeholder="Thảo Nhỏ" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <div id="countNormalCard" class="card">
+        <div class="sectionTitle">Số lượng mỗi loại</div>
+
+        <div class="row">
+          <div class="inlineField">
+            <label class="label">Công</label>
+            <input id="cnt_str" inputmode="numeric">
+          </div>
+
+          <div class="inlineField">
+            <label class="label">Tốc</label>
+            <input id="cnt_agi" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="inlineField">
+            <label class="label">Điều khiển</label>
+            <input id="cnt_ctl" inputmode="numeric">
+          </div>
+
+          <div class="inlineField">
+            <label class="label">Hỗ trợ</label>
+            <input id="cnt_sup" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <div id="countStageDistCard" class="card">
+        <div class="sectionTitle">
+          Số lượng mỗi loại, và phân bố bậc (10 Bậc / 9+1 Bậc)
+        </div>
+
+        <div class="hint">
+          Nếu không giới hạn, hệ thống tự động quyết định số lượng 10 Bậc và 9+1 Bậc
+        </div>
+
+        <div class="countStageRow">
+          <label>Công</label>
+          <input id="cnt_str_stage" inputmode="numeric">
+          <span>10 Bậc</span>
+          <select id="dist_str_10"></select>
+          <span>9+1 Bậc</span>
+          <select id="dist_str_91"></select>
+        </div>
+
+        <div class="countStageRow">
+          <label>Tốc</label>
+          <input id="cnt_agi_stage" inputmode="numeric">
+          <span>10 Bậc</span>
+          <select id="dist_agi_10"></select>
+          <span>9+1 Bậc</span>
+          <select id="dist_agi_91"></select>
+        </div>
+
+        <div class="countStageRow">
+          <label>Điều khiển</label>
+          <input id="cnt_ctl_stage" inputmode="numeric">
+          <span>10 Bậc</span>
+          <select id="dist_ctl_10"></select>
+          <span>9+1 Bậc</span>
+          <select id="dist_ctl_91"></select>
+        </div>
+
+        <div class="countStageRow">
+          <label>Hỗ trợ</label>
+          <input id="cnt_sup_stage" inputmode="numeric">
+          <span>10 Bậc</span>
+          <select id="dist_sup_10"></select>
+          <span>9+1 Bậc</span>
+          <select id="dist_sup_91"></select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sectionTitle">Chiến lược thiếu hụt (Ưu tiên thiếu nhất → Ít muốn thiếu nhất)</div>
+        <div class="hint">
+          Chọn khi kết quả thiếu hụt không như mong đợi<br>
+        </div>
+
+        <div class="row">
+          <div class="selectWrap">
+            <span class="selNo">1</span>
+            <select id="lack1">
+              <option value="none">Không thiếu</option>
+              <option value="x">Tương Tư</option>
+              <option value="y">U Hương</option>
+              <option value="c">Thảo Lớn</option>
+              <option value="d">Thảo Nhỏ</option>
+              <option value="w">Vọng Xuyên</option>
+            </select>
+          </div>
+
+          <div class="selectWrap">
+            <span class="selNo">2</span>
+            <select id="lack2">
+              <option value="none">Không thiếu</option>
+              <option value="x">Tương Tư</option>
+              <option value="y">U Hương</option>
+              <option value="c">Thảo Lớn</option>
+              <option value="d">Thảo Nhỏ</option>
+              <option value="w">Vọng Xuyên</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="selectWrap">
+            <span class="selNo">3</span>
+            <select id="lack3">
+              <option value="none">Không thiếu</option>
+              <option value="x">Tương Tư</option>
+              <option value="y">U Hương</option>
+              <option value="c">Thảo Lớn</option>
+              <option value="d">Thảo Nhỏ</option>
+              <option value="w">Vọng Xuyên</option>
+            </select>
+          </div>
+
+          <div class="selectWrap">
+            <span class="selNo">4</span>
+            <select id="lack4">
+              <option value="none">Không thiếu</option>
+              <option value="x">Tương Tư</option>
+              <option value="y">U Hương</option>
+              <option value="c">Thảo Lớn</option>
+              <option value="d">Thảo Nhỏ</option>
+              <option value="w">Vọng Xuyên</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="selectWrap">
+            <span class="selNo">5</span>
+            <select id="lack5">
+              <option value="none">Không thiếu</option>
+              <option value="x">Tương Tư</option>
+              <option value="y">U Hương</option>
+              <option value="c">Thảo Lớn</option>
+              <option value="d">Thảo Nhỏ</option>
+              <option value="w">Vọng Xuyên</option>
+            </select>
+          </div>
+          <div class="selectWrap">
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <div class="card">
+        <button id="btnCalc" type="button" class="btnStart">Bắt đầu tính <i class="fa-solid fa-caret-right"></i></button>
+      </div>
+
+    </div>
+
+
+    <div id="pageResult" class="page hidden resultPane">
+      <div id="resultExportArea">
+        <h3><i class="fa-solid fa-list-ol fa-lg"></i> Kết quả tính toán</h3>
+
+        <div class="card">
+          <table id="resultTable">
+            <tr>
+              <th>STT</th>
+              <th>Loại</th>
+              <th id="thStage">Bậc</th>
+              <th>Tương Tư</th>
+              <th>U Hương</th>
+              <th>Thảo Lớn</th>
+              <th>Thảo Nhỏ</th>
+              <th id="thW" class="page2Col">Vọng Xuyên</th>
+              <th id="thD2" class="page2Col">Thảo Nhỏ</th>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card">
+          <table id="diffTable">
+            <tr>
+              <th>Mục</th>
+              <th>Chi phí</th>
+              <th>Sở hữu</th>
+              <th>Chênh lệch</th>
+              <th>Trạng thái</th>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <button class="btnBack" onclick="back()">Quay lại <i class="fa-solid fa-rotate-left"></i></button>
+      <button id="btnSaveImage" type="button" class="btnSaveImage" style="display:none;">Lưu kết quả <i
+          class="fa-solid fa-cloud-arrow-down"></i></button>
+      <button id="btnTutorial" type="button" class="btnTutorial">Hướng dẫn sử dụng <i class="fa-solid fa-splotch"></i></button>
+
+      <div id="tutorialModal" class="modal hidden" aria-hidden="true">
+        <div class="modalBackdrop"></div>
+
+        <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+          <div class="modalHeader">
+            <div id="tutorialTitle" class="modalTitle"><i class="fa-solid fa-robot"></i>
+              Hướng dẫn sử dụng</div>
+            <button id="btnTutorialClose" class="modalClose" type="button">✕</button>
+          </div>
+
+          <div class="modalBody">
+            <div class="tutorialItem">
+              <div class="tutorialText">1. Thảo nhỏ ưu tiên cộng điểm lên cấp 2 trước</div>
+              <img class="tutorialImg" src="assets/tutorial-1-DDLFpzn6.png" alt="Hướng dẫn cộng điểm Thảo nhỏ">
+            </div>
+
+            <div class="tutorialItem">
+              <div class="tutorialText">2. Thảo lớn tập trung điểm đầy một bên trước</div>
+              <img class="tutorialImg" src="assets/tutorial-2-Cej6tdVb.png" alt="Hướng dẫn tập trung Thảo lớn">
+            </div>
+
+            <div class="tutorialItem">
+              <div class="tutorialText"><i class="fa-solid fa-magnifying-glass"></i> Bảng tra cấp Thảo lớn </div>
+
+              <div class="row" style="align-items:center;">
+                <input id="cCostInput" inputmode="numeric" placeholder="Nhập số…">
+                <div id="cCostOutput" class="cCostOutput">(Kết quả sẽ hiển thị ở đây)</div>
+              </div>
+
+              <div class="hint"><i class="fa-solid fa-circle-info"></i> Ví dụ: nhập 12 → Bên phải cấp 8 + Bên trái cấp 2</div>
+            </div>
+
+            <div class="tutorialItem">
+              <div class="tutorialText">3. Trang 2, Bậc 1 cách cộng cố định</div>
+              <img class="tutorialImg" src="assets/tutorial-3-DauPYhO2.png" alt="Hướng dẫn cộng cố định Trang 2">
+            </div>
+
+            <div class="tutorialItem">
+              <div class="tutorialText">4. Phẩm chất Tiên Thảo: Phàm - Huyền - Địa - Thiên - Linh - Hồn</div>
+            </div>
+
+            <div class="tutorialItem">
+              <div class="tutorialText">5. Thảo lớn cấp 10 trang 1 cần phẩm chất [Thiên Giới Thượng Cảnh]</div>
+              <img class="tutorialImg" src="assets/tutorial-5-CPKbG4QX.png" alt="Giới hạn phẩm chất">
+            </div>
+
+            <div class="tutorialItem">
+              <div class="tutorialText">6. Trang 2 Bậc 1 cần phẩm chất [Hồn Giới Hạ Cảnh]</div>
+              <img class="tutorialImg" src="assets/tutorial-6-DA4XM2pT.png" alt="Giới hạn phẩm chất">
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+
+  <div class="credit">
+    Vietnamese translation by <a href="https://discord.com/users/longvuuuu" target="_blank">longvuuuu</a> on Discord
+  </div>
+</body>
+
+</html>
+
